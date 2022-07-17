@@ -2,7 +2,7 @@ const Header = ({ course }) => <h1>{course.name}</h1>
 
 const Total = ({ parts }) => {
    return (
-      <p><strong>total of {parts.map(part => part.exercises).reduce((a, b) => a + b)} exercises</strong></p>
+      <p><strong>total of {parts.reduce((sum, part) => sum + part.exercises, 0)} exercises</strong></p>
    )
 }
 
