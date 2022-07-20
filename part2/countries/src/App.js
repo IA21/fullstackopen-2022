@@ -2,6 +2,18 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const CountryDetails = ({ country }) => {
+    const [capitalWeather, setCapitalWeather] = useState([])
+    const [weatherLoaded, setWeatherLoaded] = useState(false)
+
+    useEffect(() => {
+        axios
+            .get(`https://api.openweathermap.org/data/2.5/weather?appid=${process.env.REACT_APP_WEATHER_API_KEY}&units=metric&lat=${country.capitalInfo.latlng[0]}&lon=${country.capitalInfo.latlng[1]}`)
+            .then(resp => {
+                setCapitalWeather(resp.data)
+                setWeatherLoaded(true)
+            })
+    }, [country])
+
     return (
         <>
             <h1>{country.name.common}</h1>
@@ -12,6 +24,15 @@ const CountryDetails = ({ country }) => {
                 {Object.values(country.languages).map((lang, i) => <li key={i}>{lang}</li>)}
             </ul>
             <img src={country.flags.png} width={180} alt='flag' />
+            {
+                (!weatherLoaded) ? <div>loading weather...</div> :
+                    <>
+                        <h2>Weather in {country.capital}</h2>
+                        <div>temperature {capitalWeather.main.temp} Celsius</div>
+                        <img src={`https://openweathermap.org/img/wn/${capitalWeather.weather[0].icon}@2x.png`} alt='weather icon' />
+                        <div>wind {capitalWeather.wind.speed} m/s</div>
+                    </>
+            }
         </>
     )
 }
@@ -65,7 +86,7 @@ const App = () => {
 
     // dev - state change monitors
     useEffect(() => {
-        console.log('countryDetailsShown', countryDetailsShown)
+        // console.log('countryDetailsShown', countryDetailsShown)
     }, [countryDetailsShown])
     // dev - state change monitors
 
