@@ -1,20 +1,18 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import personsService from './services/persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 
 const App = () => {
-    const DB_BASE_URL = 'http://localhost:3001';
-
     const [persons, setPersons] = useState([])
     const [filterName, setFilterName] = useState('')
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
 
     useEffect(() => {
-        axios.get(`${DB_BASE_URL}/persons`).then(resp => {
-            setPersons(resp.data)
+        personsService.getPersons().then(resp => {
+            setPersons(resp)
         })
     }, [])
 
@@ -30,14 +28,14 @@ const App = () => {
             return;
         }
 
-        axios.post(`${DB_BASE_URL}/persons`, {
-            name: newName, number: newNumber
+        personsService.addPerson({
+            name: newName,
+            number: newNumber
         }).then(resp => {
-            setPersons(persons.concat(resp.data))
+            setPersons(persons.concat(resp))
             setNewName('')
             setNewNumber('')
         })
-
     }
 
     return (
