@@ -23,19 +23,30 @@ const App = () => {
     const handleFormSubmit = (e) => {
         e.preventDefault()
 
-        if (persons.filter(person => person.name.toLowerCase() === newName.trim().toLowerCase()).length > 0) {
-            alert(`${newName} is already added to phonebook`)
-            return;
-        }
+        const existing_person = persons.find(person => person.name.toLowerCase() === newName.trim().toLowerCase());
 
-        personsService.addPerson({
-            name: newName,
-            number: newNumber
-        }).then(resp => {
-            setPersons(persons.concat(resp))
-            setNewName('')
-            setNewNumber('')
-        })
+        if (existing_person) {
+            // existing person - ask for update
+            if (!window.confirm((`${newName} is already added to phonebook, replace the old number with a new one?`)))
+                return;
+
+            personsService.updatePerson(existing_person.id, {
+                ...existing_person,
+                number: newNumber
+            }).then(resp => {
+                setPersons(persons.map(person => person.id === existing_person.id ? resp : person))
+            })
+        } else {
+            // new person - add
+            personsService.addPerson({
+                name: newName,
+                number: newNumber
+            }).then(resp => {
+                setPersons(persons.concat(resp))
+                setNewName('')
+                setNewNumber('')
+            })
+        }
     }
 
     const handleDelete = (person) => {
