@@ -10,6 +10,10 @@ const addPerson = (person) => {
     return axios.post(`${DB_BASE_URL}/persons`, person).then(resp => resp.data)
 }
 
-const exps = { getPersons, addPerson }
+const deletePerson = (person) => {
+    return axios.delete(`${DB_BASE_URL}/persons/${person.id}`)
+}
+
+const exps = { getPersons, addPerson, deletePerson }
 
 export default exps
