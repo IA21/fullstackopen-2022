@@ -11,7 +11,7 @@ const App = () => {
     const [filterName, setFilterName] = useState('')
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
-    const [notificationMessage, setNotificationMessage] = useState('')
+    const [notificationDetails, setNotificationDetails] = useState({})
 
     useEffect(() => {
         personsService.getPersons().then(resp => {
@@ -19,9 +19,9 @@ const App = () => {
         })
     }, [])
 
-    const showNotification = (message) => {
-        setNotificationMessage(message)
-        setTimeout(() => setNotificationMessage(''), 3000)
+    const showNotification = (type, message) => {
+        setNotificationDetails({ type, message })
+        setTimeout(() => setNotificationDetails({}), 3000)
     }
 
     const handleFilterChange = (e) => {
@@ -43,7 +43,7 @@ const App = () => {
                 number: newNumber
             }).then(resp => {
                 setPersons(persons.map(person => person.id === existing_person.id ? resp : person))
-                showNotification(`Updated ${existing_person.name}`)
+                showNotification('success', `Updated ${existing_person.name}`)
             })
         } else {
             // new person - add
@@ -54,7 +54,7 @@ const App = () => {
                 setPersons(persons.concat(resp))
                 setNewName('')
                 setNewNumber('')
-                showNotification(`Added ${resp.name}`)
+                showNotification('success', `Added ${resp.name}`)
             })
         }
     }
@@ -63,16 +63,20 @@ const App = () => {
         if (!window.confirm(`Delete ${person.name}?`))
             return;
 
-        personsService.deletePerson(person).then(resp => {
+        personsService.deletePerson(person).then(() => {
+            showNotification('success', `Deleted ${person.name}`)
+        }).catch(err => {
+            showNotification('error', `Information of ${person.name} has already been removed from server`)
+            console.error(err)
+        }).finally(() => {
             setPersons(persons.filter(p => p.id !== person.id))
-            showNotification(`Deleted ${person.name}`)
         })
     }
 
     return (
         <div>
             <h2>Phonebook</h2>
-            <Notification message={notificationMessage} />
+            <Notification details={notificationDetails} />
             <Filter filterName={filterName} handleFilterChange={handleFilterChange} />
 
             <h2>add a new</h2>

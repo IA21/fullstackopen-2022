@@ -1,9 +1,9 @@
-const Notification = ({ message }) => {
-    if (message === '')
+const Notification = ({ details }) => {
+    if (typeof details.message === 'undefined')
         return;
 
     return (
-        <div className="notification">{message}</div>
+        <div className={`notification notification-${details.type}`}>{details.message}</div>
     )
 }
 
