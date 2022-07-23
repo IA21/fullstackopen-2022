@@ -26,14 +26,18 @@ let persons = [
         "name": "Mary Poppendieck",
         "number": "39-23-6423122"
     },
-];
+]
 
 // routes
 
+app.get('/info', (req, res) => {
+    res.send(`Phonebook has info for ${persons.length} people<br><br>${new Date()}`)
+})
+
 app.get('/api/persons', (req, res) => {
-    res.json(persons);
+    res.json(persons)
 })
 
 // server
-app.listen(3001);
-console.log('server listening on port 3001');
+app.listen(3001)
+console.log('server listening on port 3001')
