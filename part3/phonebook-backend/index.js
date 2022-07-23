@@ -38,6 +38,13 @@ app.get('/api/persons', (req, res) => {
     res.json(persons)
 })
 
+app.get('/api/persons/:id', (req, res) => {
+    let requested_person = persons.find(person => person.id == req.params.id)
+    requested_person
+        ? res.json(requested_person)
+        : res.status(404).end()
+})
+
 // server
 app.listen(3001)
 console.log('server listening on port 3001')
