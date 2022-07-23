@@ -1,10 +1,9 @@
 const express = require('express')
 const app = express()
-
 app.use(express.json())
 
-// data
 
+// data
 let persons = [
     {
         "id": 1,
@@ -28,8 +27,8 @@ let persons = [
     },
 ]
 
-// routes
 
+// routes
 app.get('/info', (req, res) => {
     res.send(`Phonebook has info for ${persons.length} people<br><br>${new Date()}`)
 })
@@ -44,6 +43,12 @@ app.get('/api/persons/:id', (req, res) => {
         ? res.json(requested_person)
         : res.status(404).end()
 })
+
+app.delete('/api/persons/:id', (req, res) => {
+    persons = persons.filter(person => person.id != req.params.id)
+    res.status(204).end()
+})
+
 
 // server
 app.listen(3001)
