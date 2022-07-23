@@ -1,9 +1,18 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
+
+
+// middlewares
+
+
 app.use(express.json())
+app.use(morgan('tiny'))
 
 
 // data
+
+
 let persons = [
     {
         "id": 1,
@@ -29,6 +38,8 @@ let persons = [
 
 
 // routes
+
+
 app.get('/info', (req, res) => {
     res.send(`Phonebook has info for ${persons.length} people<br><br>${new Date()}`)
 })
@@ -75,5 +86,7 @@ app.delete('/api/persons/:id', (req, res) => {
 
 
 // server
+
+
 app.listen(3001)
 console.log('server listening on port 3001')
