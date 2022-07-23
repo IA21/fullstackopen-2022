@@ -47,16 +47,23 @@ app.get('/api/persons/:id', (req, res) => {
 app.post('/api/persons', (req, res) => {
     let new_id, new_person = req.body;
 
-    if (!new_person.name)
+    // error handling
+    if (!new_person.name) {
         res.status(400).json({ error: 'name required' })
-    else if (!new_person.number)
+        return
+    } else if (!new_person.number) {
         res.status(400).json({ error: 'number required' })
+        return
+    } else if (persons.find(person => person.name.toLowerCase() === new_person.name.toLowerCase())) {
+        res.status(400).json({ error: 'name must be unique' })
+        return
+    }
 
     do {
         new_id = Math.floor(Math.random() * 1000000)
     } while (persons.map(p => p.id).find(id => id === new_id))  // keep generating ids until you get a unique one
 
-    new_person = { ...new_person, id: new_id }
+    new_person = { id: new_id, ...new_person }
     persons.push(new_person)
     res.json(new_person)
 })
