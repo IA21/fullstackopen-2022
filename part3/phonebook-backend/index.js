@@ -11,6 +11,8 @@ app.use(cors())
 
 app.use(express.json())
 
+app.use(express.static('build'))
+
 morgan.token('req_data', (req, res) => { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :req_data'))
 
@@ -95,5 +97,5 @@ app.delete('/api/persons/:id', (req, res) => {
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-    console.log(`server running on port: ${PORT}`)
+    console.log(`server running on port ${PORT}`)
 })
