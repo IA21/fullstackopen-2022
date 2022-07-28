@@ -6,7 +6,8 @@
     "scripts": {
         "start": "node index.js",
         "dev": "nodemon index.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "heroku:push": "git add -A && git commit -m probablyshouldaddsomethinghere && cd ../../ && git subtree push --prefix part3/phonebook-backend/ heroku master"
     },
     "author": "IA21",
     "license": "MIT",
