@@ -93,5 +93,7 @@ app.delete('/api/persons/:id', (req, res) => {
 // server
 
 
-app.listen(3001)
-console.log('server listening on port 3001')
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+    console.log(`server running on port: ${PORT}`)
+})
