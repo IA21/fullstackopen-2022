@@ -8,7 +8,7 @@
         "dev": "nodemon index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
         "build:ui": "rm -rf build && cd ../../part2/phonebook/ && npm run build && cp -r build ../../part3/phonebook-backend/",
-        "heroku:push": "git add -A && git commit -m 3.11 && cd ../../ && git subtree push --prefix part3/phonebook-backend/ heroku master",
+        "heroku:push": "git add -A && git commit -m heroku:push && cd ../../ && git subtree push --prefix part3/phonebook-backend/ heroku master",
         "deploy": "npm run build:ui && npm run heroku:push"
     },
     "author": "IA21",
@@ -16,6 +16,7 @@
     "dependencies": {
         "cors": "^2.8.5",
         "express": "^4.18.1",
+        "mongoose": "^6.5.0",
         "morgan": "^1.10.0"
     }
 }
