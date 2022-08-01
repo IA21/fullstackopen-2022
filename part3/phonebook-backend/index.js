@@ -1,6 +1,8 @@
+require('dotenv').config()
+const Person = require('./models/person')
 const cors = require('cors')
-const express = require('express')
 const morgan = require('morgan')
+const express = require('express')
 const app = express()
 
 
@@ -17,49 +19,33 @@ morgan.token('req_data', (req, res) => { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :req_data'))
 
 
-// data
-
-
-let persons = [
-    {
-        "id": 1,
-        "name": "Arto Hellas",
-        "number": "040-123456"
-    },
-    {
-        "id": 2,
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523"
-    },
-    {
-        "id": 3,
-        "name": "Dan Abramov",
-        "number": "12-43-234345"
-    },
-    {
-        "id": 4,
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122"
-    },
-]
-
-
 // routes
 
 
 app.get('/info', (req, res) => {
-    res.send(`Phonebook has info for ${persons.length} people<br><br>${new Date()}`)
+    Person
+        .find({})
+        .then(persons => {
+            res.send(`Phonebook has info for ${persons.length} people<br><br>${new Date()}`)
+        })
 })
 
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    Person
+        .find({})
+        .then(persons => {
+            res.json(persons)
+        })
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    let requested_person = persons.find(person => person.id == req.params.id)
-    requested_person
-        ? res.json(requested_person)
-        : res.status(404).end()
+    Person
+        .findById(req.params.id)
+        .then(person => res.json(person))
+        .catch(err => {
+            console.error(err)
+            res.status(404).end()
+        })
 })
 
 app.post('/api/persons', (req, res) => {
@@ -95,7 +81,7 @@ app.delete('/api/persons/:id', (req, res) => {
 // server
 
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`server running on port ${PORT}`)
 })
