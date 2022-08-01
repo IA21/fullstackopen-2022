@@ -22,23 +22,25 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :r
 // routes
 
 
-app.get('/info', (req, res) => {
+app.get('/info', (req, res, next) => {
     Person
         .find({})
         .then(persons => {
             res.send(`Phonebook has info for ${persons.length} people<br><br>${new Date()}`)
         })
+        .catch(err => next(err))
 })
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res, next) => {
     Person
         .find({})
         .then(persons => {
             res.json(persons)
         })
+        .catch(err => next(err))
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     Person
         .findById(req.params.id)
         .then(person => {
@@ -46,13 +48,10 @@ app.get('/api/persons/:id', (req, res) => {
                 ? res.json(person)
                 : res.status(404).end()
         })
-        .catch(err => {
-            console.error(err)
-            res.status(500).end()
-        })
+        .catch(err => next(err))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     let new_person = req.body;
 
     if (!new_person.name) {
@@ -66,9 +65,10 @@ app.post('/api/persons', (req, res) => {
     new Person(new_person)
         .save()
         .then(saved_person => res.json(saved_person))
+        .catch(err => next(err))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     Person
         .findByIdAndDelete(req.params.id)
         .then(removed_person => {
@@ -76,8 +76,24 @@ app.delete('/api/persons/:id', (req, res) => {
                 ? res.send(204).end()
                 : res.send(404).end()
         })
-        .catch(err => console.error(err))
+        .catch(err => next(err))
 })
+
+
+// middlewares continued
+
+
+const error_handler = (err, req, res, next) => {
+    console.error(err)
+
+    if (err.name === 'CastError')
+        res.status(400).send({ error: 'invalid id' })
+    else
+        res.status(500).end()
+
+    next(err)
+}
+app.use(error_handler)
 
 
 // server
