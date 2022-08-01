@@ -41,10 +41,14 @@ app.get('/api/persons', (req, res) => {
 app.get('/api/persons/:id', (req, res) => {
     Person
         .findById(req.params.id)
-        .then(person => res.json(person))
+        .then(person => {
+            person
+                ? res.json(person)
+                : res.status(404).end()
+        })
         .catch(err => {
             console.error(err)
-            res.status(404).end()
+            res.status(500).end()
         })
 })
 
@@ -65,8 +69,14 @@ app.post('/api/persons', (req, res) => {
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-    persons = persons.filter(person => person.id != req.params.id)
-    res.status(204).end()
+    Person
+        .findByIdAndDelete(req.params.id)
+        .then(removed_person => {
+            removed_person
+                ? res.send(204).end()
+                : res.send(404).end()
+        })
+        .catch(err => console.error(err))
 })
 
 
