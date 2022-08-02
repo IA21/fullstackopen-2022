@@ -11,7 +11,35 @@ const person_schema = new mongoose.Schema({
         required: true,
         minLength: 3,
     },
-    number: String,
+    number: {
+        type: String,
+        required: true,
+        minLength: 8,
+        validate: {
+            validator: (val) => {
+                // if any non number char besides '-' is found, its invalid 
+                if (isNaN(val.replaceAll('-', '')))
+                    return false
+
+                // check if '-' exists and if first digits are 2||3
+                let num_parts = val.split('-')
+
+                if (num_parts.length === 1) {
+                    // no -
+                    return true
+                } else if (num_parts.length === 2) {
+                    // 1 -
+                    return (num_parts[0].length === 2 || num_parts[0].length === 3)
+                } else {
+                    // multiple -
+                    return false
+                }
+            },
+            // message: (props) => {
+            //     return 'invalid value'
+            // }
+        },
+    },
 })
 
 person_schema.set('toJSON', {

@@ -62,15 +62,23 @@ app.post('/api/persons', (req, res, next) => {
         return
     }
 
-    new Person(new_person)
-        .save()
-        .then(saved_person => res.json(saved_person))
-        .catch(err => next(err))
+    Person
+        .find({ name: new_person.name })
+        .then(existing_persons => {
+            if (existing_persons.length > 0) {
+                res.status(409).json({ error: `person with name '${new_person.name}' already exists` })
+            } else {
+                new Person(new_person)
+                    .save()
+                    .then(saved_person => res.json(saved_person))
+                    .catch(err => next(err))
+            }
+        })
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
     Person
-        .findByIdAndUpdate(req.params.id, { number: req.body.number }, { new: true })
+        .findByIdAndUpdate(req.params.id, { number: req.body.number }, { new: true, runValidators: true, context: 'query' })
         .then(updated_person => res.json(updated_person))
         .catch(err => next(err))
 })

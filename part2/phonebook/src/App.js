@@ -44,6 +44,9 @@ const App = () => {
             }).then(resp => {
                 setPersons(persons.map(person => person.id === existing_person.id ? resp : person))
                 showNotification('success', `Updated ${existing_person.name}`)
+            }).catch(err => {
+                console.error(err)
+                showNotification('error', err.response.data.error)
             })
         } else {
             // new person - add
