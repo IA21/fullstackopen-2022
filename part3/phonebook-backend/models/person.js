@@ -6,7 +6,11 @@ mongoose
     .catch(err => console.error(`mongoose connection error:`, err))
 
 const person_schema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        required: true,
+        minLength: 3,
+    },
     number: String,
 })
 

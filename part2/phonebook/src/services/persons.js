@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const DB_BASE_URL = '/api';
+const DB_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+console.log('API_ENDPOINT', DB_BASE_URL)
 
 const getPersons = () => {
     return axios.get(`${DB_BASE_URL}/persons`).then(resp => resp.data)

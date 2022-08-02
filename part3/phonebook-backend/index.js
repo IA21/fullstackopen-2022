@@ -95,6 +95,8 @@ const error_handler = (err, req, res, next) => {
 
     if (err.name === 'CastError')
         res.status(400).send({ error: 'invalid id' })
+    if (err.name === 'ValidationError')
+        res.status(400).send({ error: err.message })
     else
         res.status(500).end()
 
