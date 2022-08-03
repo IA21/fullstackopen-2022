@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 mongoose
     .connect(process.env.MONGO_URL)
     .then(() => console.log('mongoose connected'))
-    .catch(err => console.error(`mongoose connection error:`, err))
+    .catch(err => console.error('mongoose connection error:', err))
 
 const person_schema = new mongoose.Schema({
     name: {
@@ -17,7 +17,7 @@ const person_schema = new mongoose.Schema({
         minLength: 8,
         validate: {
             validator: (val) => {
-                // if any non number char besides '-' is found, its invalid 
+                // if any non number char besides '-' is found, its invalid
                 if (isNaN(val.replaceAll('-', '')))
                     return false
 

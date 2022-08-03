@@ -5,9 +5,9 @@ if (process.argv.length !== 3 && process.argv.length !== 5) {
     process.exit()
 }
 
-const mongo_password = process.argv[2];
-const mongo_db = 'phonebook';
-const mongo_url = `mongodb://fso_2022:${mongo_password}@ac-atdiypq-shard-00-00.yeekrsi.mongodb.net:27017,ac-atdiypq-shard-00-01.yeekrsi.mongodb.net:27017,ac-atdiypq-shard-00-02.yeekrsi.mongodb.net:27017/${mongo_db}?ssl=true&replicaSet=atlas-e3rqhs-shard-0&authSource=admin&retryWrites=true&w=majority`;
+const mongo_password = process.argv[2]
+const mongo_db = 'phonebook'
+const mongo_url = `mongodb://fso_2022:${mongo_password}@ac-atdiypq-shard-00-00.yeekrsi.mongodb.net:27017,ac-atdiypq-shard-00-01.yeekrsi.mongodb.net:27017,ac-atdiypq-shard-00-02.yeekrsi.mongodb.net:27017/${mongo_db}?ssl=true&replicaSet=atlas-e3rqhs-shard-0&authSource=admin&retryWrites=true&w=majority`
 
 const person_schema = new mongoose.Schema({
     name: String,
@@ -17,7 +17,7 @@ const person_schema = new mongoose.Schema({
 const Person = mongoose.model('person', person_schema)
 
 if (process.argv.length === 3) {
-    mongoose.connect(mongo_url).then(result => {
+    mongoose.connect(mongo_url).then(() => {
         Person
             .find({})
             .then(people => {
@@ -29,8 +29,8 @@ if (process.argv.length === 3) {
             })
     })
 } else if (process.argv.length === 5) {
-    const input_name = process.argv[3];
-    const input_number = process.argv[4];
+    const input_name = process.argv[3]
+    const input_number = process.argv[4]
 
     let new_person = new Person({
         name: input_name,
@@ -39,7 +39,7 @@ if (process.argv.length === 3) {
 
     mongoose
         .connect(mongo_url)
-        .then(result => {
+        .then(() => {
             new_person
                 .save()
                 .then(saved_person => {

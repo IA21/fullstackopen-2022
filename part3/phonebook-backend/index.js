@@ -15,7 +15,7 @@ app.use(express.json())
 
 app.use(express.static('build'))
 
-morgan.token('req_data', (req, res) => { return JSON.stringify(req.body) })
+morgan.token('req_data', (req) => { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :req_data'))
 
 
@@ -52,7 +52,7 @@ app.get('/api/persons/:id', (req, res, next) => {
 })
 
 app.post('/api/persons', (req, res, next) => {
-    let new_person = req.body;
+    let new_person = req.body
 
     if (!new_person.name) {
         res.status(400).json({ error: 'name required' })
