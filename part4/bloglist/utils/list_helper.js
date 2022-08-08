@@ -21,17 +21,29 @@ const favorite_blog = (blogs) => {
 }
 
 const most_blogs = (blogs) => {
-    let blog_counts = {};
+    let blog_count = {};
 
     blogs
         .map(blog => blog.author)
         .forEach(author => {
-            blog_counts[author] = blog_counts[author]
-                ? { author: author, blogs: blog_counts[author].blogs + 1 }
+            blog_count[author] = blog_count[author]
+                ? { author: author, blogs: blog_count[author].blogs + 1 }
                 : { author: author, blogs: 1 }
         })
 
-    return Object.values(blog_counts).reduce((prev, curr) => (prev.blogs > curr.blogs) ? prev : curr, {})
+    return Object.values(blog_count).reduce((prev, curr) => (prev.blogs > curr.blogs) ? prev : curr, {})
 }
 
-module.exports = { dummy, total_likes, favorite_blog, most_blogs }
+const most_likes = (blogs) => {
+    let likes_count = {};
+
+    blogs.forEach(blog => {
+        likes_count[blog.author] = likes_count[blog.author]
+            ? { author: blog.author, likes: blog.likes + likes_count[blog.author].likes }
+            : { author: blog.author, likes: blog.likes }
+    })
+
+    return Object.values(likes_count).reduce((prev, curr) => (prev.likes > curr.likes) ? prev : curr, {})
+}
+
+module.exports = { dummy, total_likes, favorite_blog, most_blogs, most_likes }
