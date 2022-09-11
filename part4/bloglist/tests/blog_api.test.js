@@ -87,6 +87,18 @@ test('missing likes property defaults to 0', async () => {
 })
 
 
+test('missing title and url properties results in HTTP 400 Error', async () => {
+    const new_blog = {
+        author: 'some author',
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(new_blog)
+        .expect(400)
+})
+
+
 /* TESTS */
 
 
