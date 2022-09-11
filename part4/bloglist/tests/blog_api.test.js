@@ -15,11 +15,13 @@ const initial_blogs = [
         title: "test blog 2",
         author: "test author 2",
         url: "test url 2",
+        likes: 4,
     },
     {
         title: "test blog 3",
         author: "test author 3",
         url: "test url 3",
+        likes: 0,
     },
 ]
 
@@ -42,7 +44,6 @@ test('all blogs are returned', async () => {
 
 test('the unique identifier property of the blog posts is named id', async () => {
     const blog = (await api.get('/api/blogs')).body[0]
-    console.log(blog)
     expect(blog.id).toBeDefined()
 }, TIMEOUT)
 
@@ -64,6 +65,25 @@ test('a valid blog can be added', async () => {
 
     const all_titles = all_blogs.map(blog => blog.title)
     expect(all_titles).toContain('new test blog')
+})
+
+
+test('missing likes property defaults to 0', async () => {
+    const new_blog = {
+        title: 'blog with no likes',
+        author: 'some author',
+        url: 'some url',
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(new_blog)
+        .expect(201)
+
+    const all_blogs = (await api.get('/api/blogs')).body
+    const newly_added_blog = all_blogs.find(blog => blog.title == 'blog with no likes')
+
+    expect(newly_added_blog.likes).toBe(0)
 })
 
 

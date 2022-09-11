@@ -7,7 +7,11 @@ blog_router.get('/', async (req, res, next) => {
 })
 
 blog_router.post('/', async (req, res, next) => {
-    const saved_blog = await new Blog(req.body).save()
+    const new_blog = {
+        likes: 0,
+        ...req.body,
+    }
+    const saved_blog = await new Blog(new_blog).save()
     res.status(201).json(saved_blog)
 })
 
