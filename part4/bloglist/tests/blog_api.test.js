@@ -89,13 +89,26 @@ test('missing likes property defaults to 0', async () => {
 
 test('missing title and url properties results in HTTP 400 Error', async () => {
     const new_blog = {
-        author: 'some author',
+        author: 'author with invalid blog',
     }
 
     await api
         .post('/api/blogs')
         .send(new_blog)
         .expect(400)
+})
+
+
+test('a blog entry can be deleted', async () => {
+    const first_blog = (await api.get('/api/blogs')).body[0]
+
+    await api.delete(`/api/blogs/${first_blog.id}`)
+
+    const all_blogs = (await api.get('/api/blogs')).body
+    expect(all_blogs).toHaveLength(initial_blogs.length - 1)
+
+    const all_titles = all_blogs.map(blog => blog.title)
+    expect(all_titles).not.toContain(first_blog.title)
 })
 
 
