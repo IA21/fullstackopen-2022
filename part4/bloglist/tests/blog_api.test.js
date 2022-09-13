@@ -10,6 +10,7 @@ const initial_blogs = [
         title: "test blog 1",
         author: "test author 1",
         url: "test url 1",
+        likes: 1,
     },
     {
         title: "test blog 2",
@@ -109,6 +110,15 @@ test('a blog entry can be deleted', async () => {
 
     const all_titles = all_blogs.map(blog => blog.title)
     expect(all_titles).not.toContain(first_blog.title)
+})
+
+
+test('likes of a note can be updated', async () => {
+    const first_blog = (await api.get('/api/blogs')).body[0]
+
+    const updated_blog = await api.put(`/api/blogs/${first_blog.id}`).send({ likes: 104 })
+
+    expect(updated_blog.body.likes).toBe(104)
 })
 
 
