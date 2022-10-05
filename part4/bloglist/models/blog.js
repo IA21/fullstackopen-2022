@@ -14,5 +14,4 @@ blog_schema.set('toJSON', {
     }
 })
 
-
 module.exports = mongoose.model('Blog', blog_schema)
