@@ -1,13 +1,14 @@
 const { info, error } = require('./utils/logger')
 const config = require('./utils/config')
-const middleware = require('./utils/middleware');
+const express = require('express');
+const app = express()
+require('express-async-errors')
 const login_router = require('./controllers/login');
 const blog_router = require('./controllers/blogs');
 const user_router = require('./controllers/users');
+const middleware = require('./utils/middleware');
 const mongoose = require('mongoose');
-const express = require('express');
 const cors = require('cors');
-const app = express()
 
 mongoose.connect(config.MONGO_URL).then(() => info('mongoose connected'))
 
