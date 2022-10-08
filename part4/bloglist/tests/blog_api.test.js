@@ -1,9 +1,13 @@
+const bcrypt = require('bcrypt')
 const mongoose = require('mongoose');
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const supertest = require('supertest');
 const app = require('../app');
 const api = supertest(app)
 const TIMEOUT = 100 * 1000;
+
+let TOKEN = null;
 
 const initial_blogs = [
     {
@@ -27,9 +31,31 @@ const initial_blogs = [
 ]
 
 beforeEach(async () => {
+    // reset users
+    await User.deleteMany({})
+    const new_user = await new User({
+        username: 'root',
+        password_hash: await bcrypt.hash('sudo', 10),
+        name: 'sysadmin'
+    }).save()
+
+    // login
+    const res = await api
+        .post('/api/login')
+        .send({
+            username: 'root',
+            password: 'sudo'
+        })
+
+    TOKEN = res.body.token
+
+    // reset blogs
     await Blog.deleteMany({})
     for (const blog of initial_blogs) {
-        await new Blog(blog).save()
+        await new Blog({
+            user: new_user._id,
+            ...blog,
+        }).save()
     }
 }, TIMEOUT)
 
@@ -58,6 +84,7 @@ test('a valid blog can be added', async () => {
 
     await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${TOKEN}`)
         .send(new_blog)
         .expect(201)
 
@@ -66,6 +93,23 @@ test('a valid blog can be added', async () => {
 
     const all_titles = all_blogs.map(blog => blog.title)
     expect(all_titles).toContain('new test blog')
+})
+
+
+test('a blog creation fails if a token is not provided', async () => {
+    const new_blog = {
+        title: 'new test blog',
+        author: 'new test author',
+        url: 'new test url',
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(new_blog)
+        .expect(401)
+
+    const all_blogs = (await api.get('/api/blogs')).body
+    expect(all_blogs).toHaveLength(initial_blogs.length)
 })
 
 
@@ -78,6 +122,7 @@ test('missing likes property defaults to 0', async () => {
 
     await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${TOKEN}`)
         .send(new_blog)
         .expect(201)
 
@@ -95,6 +140,7 @@ test('missing title and url properties results in HTTP 400 Error', async () => {
 
     await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${TOKEN}`)
         .send(new_blog)
         .expect(400)
 })
@@ -103,7 +149,9 @@ test('missing title and url properties results in HTTP 400 Error', async () => {
 test('a blog entry can be deleted', async () => {
     const first_blog = (await api.get('/api/blogs')).body[0]
 
-    await api.delete(`/api/blogs/${first_blog.id}`)
+    await api
+        .delete(`/api/blogs/${first_blog.id}`)
+        .set('Authorization', `Bearer ${TOKEN}`)
 
     const all_blogs = (await api.get('/api/blogs')).body
     expect(all_blogs).toHaveLength(initial_blogs.length - 1)
