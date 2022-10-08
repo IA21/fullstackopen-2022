@@ -14,6 +14,7 @@ mongoose.connect(config.MONGO_URL).then(() => info('mongoose connected'))
 
 app.use(cors())
 app.use(express.json())
+app.use(middleware.extract_auth_token)
 app.use('/api/login', login_router)
 app.use('/api/blogs', blog_router)
 app.use('/api/users', user_router)
