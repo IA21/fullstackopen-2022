@@ -1,7 +1,6 @@
-const jwt = require('jsonwebtoken');
 const Blog = require('../models/blog')
-const User = require('../models/user')
 const blog_router = require('express').Router()
+const { extract_user } = require('../utils/middleware');
 
 blog_router.get('/', async (req, res) => {
     const blogs = await Blog
@@ -10,21 +9,13 @@ blog_router.get('/', async (req, res) => {
     res.json(blogs)
 })
 
-blog_router.post('/', async (req, res) => {
+blog_router.post('/', extract_user, async (req, res) => {
     if (req.body.title === undefined ||
         req.body.url === undefined) {
         return res.status(400).end()
     }
 
-    const token_decoded = jwt.verify(req.token, process.env.JWT_SECRET_KEY)
-
-    if (!token_decoded.id) {
-        return res.status(401).json({
-            error: 'token invalid',
-        })
-    }
-
-    const user = await User.findById(token_decoded.id)
+    const user = req.user;
 
     const new_blog = {
         likes: 0,
@@ -39,18 +30,10 @@ blog_router.post('/', async (req, res) => {
     res.status(201).json(saved_blog)
 })
 
-blog_router.delete('/:id', async (req, res) => {
-    const token_decoded = jwt.verify(req.token, process.env.JWT_SECRET_KEY)
-
-    if (!token_decoded.id) {
-        return res.status(401).json({
-            error: 'token invalid',
-        })
-    }
-
+blog_router.delete('/:id', extract_user, async (req, res) => {
     const blog = await Blog.findById(req.params.id)
 
-    if (blog.user.toString() !== token_decoded.id) {
+    if (blog.user.toString() !== req.user._id.toString()) {
         return res.status(401).json({
             error: 'you are not authorized to delete this note',
         })
