@@ -40,6 +40,22 @@ blog_router.post('/', async (req, res) => {
 })
 
 blog_router.delete('/:id', async (req, res) => {
+    const token_decoded = jwt.verify(req.token, process.env.JWT_SECRET_KEY)
+
+    if (!token_decoded.id) {
+        return res.status(401).json({
+            error: 'token invalid',
+        })
+    }
+
+    const blog = await Blog.findById(req.params.id)
+
+    if (blog.user.toString() !== token_decoded.id) {
+        return res.status(401).json({
+            error: 'you are not authorized to delete this note',
+        })
+    }
+
     await Blog.findByIdAndRemove(req.params.id)
     res.status(204).end()
 })
