@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+import Notification from './components/Notification'
 import Login from './components/Login'
+import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
+    const [notificationMessage, setNotificationMessage] = useState('')
+    const [notificationType, setNotificationType] = useState('')
     const [blogs, setBlogs] = useState([])
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -29,6 +32,18 @@ const App = () => {
         }
     }, [])
 
+    const showSuccessNotification = (message) => {
+        setNotificationType('success')
+        setNotificationMessage(message)
+        setTimeout(() => setNotificationMessage(''), 5000);
+    }
+
+    const showErrorNotification = (message) => {
+        setNotificationType('error')
+        setNotificationMessage(message)
+        setTimeout(() => setNotificationMessage(''), 5000);
+    }
+
     const loginSubmit = async (event) => {
         event.preventDefault()
 
@@ -43,7 +58,7 @@ const App = () => {
             setPassword('')
         } catch (error) {
             console.error(error)
-            alert(error.response.data.error)
+            showErrorNotification(`wrong username or password`)
         }
     }
 
@@ -68,14 +83,16 @@ const App = () => {
             setBlogURL('')
 
             setBlogs(blogs.concat(new_blog))
+            showSuccessNotification(`a new blog ${blogTitle} by ${blogAuthor} added`)
         } catch (error) {
             console.error(error)
-            alert(error.response.data.error)
+            showErrorNotification(error.response.data.error)
         }
     }
 
     return (
         <div>
+            <Notification message={notificationMessage} type={notificationType} />
             {
                 (user === null)
                     ?
