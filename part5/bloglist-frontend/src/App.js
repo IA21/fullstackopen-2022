@@ -9,13 +9,10 @@ import BlogForm from './components/BlogForm'
 const App = () => {
     const [notificationMessage, setNotificationMessage] = useState('')
     const [notificationType, setNotificationType] = useState('')
-    const [blogs, setBlogs] = useState([])
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
-    const [blogTitle, setBlogTitle] = useState('')
-    const [blogAuthor, setBlogAuthor] = useState('')
-    const [blogURL, setBlogURL] = useState('')
+    const [blogs, setBlogs] = useState([])
 
     const blogFormRef = useRef()
 
@@ -71,23 +68,13 @@ const App = () => {
         window.location.reload()
     }
 
-    const createBlog = async (event) => {
-        event.preventDefault()
-
+    const createBlogMain = async (blog_data) => {
         try {
-            let new_blog = await blogService.create({
-                title: blogTitle,
-                author: blogAuthor,
-                url: blogURL
-            })
-
-            setBlogTitle('')
-            setBlogAuthor('')
-            setBlogURL('')
-            blogFormRef.current.setBlogFormVisility(false)
+            let new_blog = await blogService.create(blog_data)
 
             setBlogs(blogs.concat(new_blog))
-            showSuccessNotification(`a new blog ${blogTitle} by ${blogAuthor} added`)
+            showSuccessNotification(`a new blog ${new_blog.title} by ${new_blog.author} added`)
+            blogFormRef.current.setBlogFormVisility(false)
         } catch (error) {
             console.error(error)
             showErrorNotification(error.response.data.error)
@@ -114,15 +101,7 @@ const App = () => {
                         <h2>blogs</h2>
                         <pre>{user.name} logged in <button onClick={logout}>logout</button></pre>
 
-                        <BlogForm
-                            ref={blogFormRef}
-                            createBlog={createBlog}
-                            blogTitle={blogTitle}
-                            setBlogTitle={setBlogTitle}
-                            blogAuthor={blogAuthor}
-                            setBlogAuthor={setBlogAuthor}
-                            blogURL={blogURL}
-                            setBlogURL={setBlogURL} />
+                        <BlogForm ref={blogFormRef} createBlogMain={createBlogMain} />
 
                         <br />
 

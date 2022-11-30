@@ -1,15 +1,24 @@
 import { useState, forwardRef, useImperativeHandle } from 'react'
 
-const BlogForm = forwardRef(({
-    createBlog,
-    blogTitle,
-    setBlogTitle,
-    blogAuthor,
-    setBlogAuthor,
-    blogURL,
-    setBlogURL,
-}, refs) => {
+const BlogForm = forwardRef(({ createBlogMain }, refs) => {
     const [visible, setVisible] = useState(false)
+    const [blogTitle, setBlogTitle] = useState('')
+    const [blogAuthor, setBlogAuthor] = useState('')
+    const [blogURL, setBlogURL] = useState('')
+
+    const createBlog = async (event) => {
+        event.preventDefault()
+
+        createBlogMain({
+            title: blogTitle,
+            author: blogAuthor,
+            url: blogURL
+        }).then(() => {
+            setBlogTitle('')
+            setBlogAuthor('')
+            setBlogURL('')
+        })
+    }
 
     const setBlogFormVisility = (value) => {
         setVisible(value)
