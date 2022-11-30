@@ -1,6 +1,4 @@
 const Notification = ({ message, type }) => {
-    console.log({ message, type })
-
     if (!message)
         return <></>
     else

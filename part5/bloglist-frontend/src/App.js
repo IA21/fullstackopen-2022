@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import blogService from './services/blogs'
+import loginService from './services/login'
 import Notification from './components/Notification'
 import Login from './components/Login'
 import Blog from './components/Blog'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
     const [notificationMessage, setNotificationMessage] = useState('')
@@ -15,6 +16,8 @@ const App = () => {
     const [blogTitle, setBlogTitle] = useState('')
     const [blogAuthor, setBlogAuthor] = useState('')
     const [blogURL, setBlogURL] = useState('')
+
+    const blogFormRef = useRef()
 
     useEffect(() => {
         blogService.getAll().then(blogs =>
@@ -81,6 +84,7 @@ const App = () => {
             setBlogTitle('')
             setBlogAuthor('')
             setBlogURL('')
+            blogFormRef.current.setBlogFormVisility(false)
 
             setBlogs(blogs.concat(new_blog))
             showSuccessNotification(`a new blog ${blogTitle} by ${blogAuthor} added`)
@@ -110,16 +114,16 @@ const App = () => {
                         <h2>blogs</h2>
                         <pre>{user.name} logged in <button onClick={logout}>logout</button></pre>
 
-                        <h2>create new</h2>
-                        <form onSubmit={createBlog}>
-                            <div><label>title <input type='text' value={blogTitle} onChange={({ target }) => setBlogTitle(target.value)} required /></label></div>
-                            <div><label>author <input type='text' value={blogAuthor} onChange={({ target }) => setBlogAuthor(target.value)} required /></label></div>
-                            <div><label>url <input type='text' value={blogURL} onChange={({ target }) => setBlogURL(target.value)} required /></label></div>
-                            <br />
-                            <button>create</button>
-                        </form>
+                        <BlogForm
+                            ref={blogFormRef}
+                            createBlog={createBlog}
+                            blogTitle={blogTitle}
+                            setBlogTitle={setBlogTitle}
+                            blogAuthor={blogAuthor}
+                            setBlogAuthor={setBlogAuthor}
+                            blogURL={blogURL}
+                            setBlogURL={setBlogURL} />
 
-                        <br />
                         <br />
 
                         {
