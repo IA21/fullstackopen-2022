@@ -21,5 +21,9 @@ const like_blog = async (blog) => {
     return resp.data
 }
 
-let exps = { setToken, getAll, create, like_blog }
+const delete_blog = async (blog) => {
+    await axios.delete(`${baseUrl}/${blog.id}`, { headers: { Authorization: `bearer ${token}` } })
+}
+
+let exps = { setToken, getAll, create, like_blog, delete_blog }
 export default exps
