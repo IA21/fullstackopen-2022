@@ -81,6 +81,17 @@ const App = () => {
         }
     }
 
+    const likeBlogMain = async (blog_data) => {
+        try {
+            await blogService.like_blog(blog_data)
+            setBlogs(blogs.map(blog => blog.id !== blog_data.id ? blog : { ...blog_data, likes: blog_data.likes + 1 }))
+            showSuccessNotification(`liked blog ${blog_data.title}`)
+        } catch (error) {
+            console.error(error)
+            showErrorNotification(error.response.data.error)
+        }
+    }
+
     return (
         <div>
             <Notification message={notificationMessage} type={notificationType} />
@@ -106,7 +117,7 @@ const App = () => {
                         <br />
 
                         {
-                            blogs.map(blog => <Blog key={blog.id} blog={blog} />)
+                            blogs.map(blog => <Blog key={blog.id} blog={blog} likeBlogMain={likeBlogMain} />)
                         }
                     </div>
             }

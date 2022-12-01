@@ -16,5 +16,10 @@ const create = async (new_blog) => {
     return resp.data
 }
 
-let exps = { setToken, getAll, create }
+const like_blog = async (blog) => {
+    const resp = await axios.put(`${baseUrl}/${blog.id}`, { likes: blog.likes + 1 })
+    return resp.data
+}
+
+let exps = { setToken, getAll, create, like_blog }
 export default exps
