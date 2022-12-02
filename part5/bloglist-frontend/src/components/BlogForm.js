@@ -50,4 +50,6 @@ const BlogForm = forwardRef(({ createBlogMain }, refs) => {
     )
 })
 
+BlogForm.displayName = 'BlogForm'
+
 export default BlogForm

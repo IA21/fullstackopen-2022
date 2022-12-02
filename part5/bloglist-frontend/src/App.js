@@ -26,7 +26,7 @@ const App = () => {
         let logged_in_user = window.localStorage.getItem('logged_in_user')
 
         if (logged_in_user) {
-            let user = JSON.parse(logged_in_user);
+            let user = JSON.parse(logged_in_user)
             blogService.setToken(user.token)
             setUser(user)
         }
@@ -35,13 +35,13 @@ const App = () => {
     const showSuccessNotification = (message) => {
         setNotificationType('success')
         setNotificationMessage(message)
-        setTimeout(() => setNotificationMessage(''), 5000);
+        setTimeout(() => setNotificationMessage(''), 5000)
     }
 
     const showErrorNotification = (message) => {
         setNotificationType('error')
         setNotificationMessage(message)
-        setTimeout(() => setNotificationMessage(''), 5000);
+        setTimeout(() => setNotificationMessage(''), 5000)
     }
 
     const loginSubmit = async (event) => {
