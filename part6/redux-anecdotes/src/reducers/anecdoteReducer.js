@@ -17,9 +17,14 @@ const asObject = (anecdote) => {
     }
 }
 
-const initialState = anecdotesAtStart.map(asObject)
+const initialState = {
+    anecdotes: anecdotesAtStart.map(asObject),
+    filter: '',
+}
 
-const reducer = (state = initialState, action) => {
+console.log(initialState)
+
+export const anecdoteReducer = (state = initialState.anecdotes, action) => {
     switch (action.type) {
         case 'VOTE':
             return state.map(anecdote =>
@@ -33,6 +38,15 @@ const reducer = (state = initialState, action) => {
                 content: action.data.content,
                 votes: 0,
             }]
+        default:
+            return state
+    }
+}
+
+export const filterReducer = (state = '', action) => {
+    switch (action.type) {
+        case 'UPDATE_FILTER':
+            return action.payload
         default:
             return state
     }
@@ -56,4 +70,9 @@ export const ac_add_anecdote = (content) => {
     }
 }
 
-export default reducer
+export const ac_filter = (value) => {
+    return {
+        type: 'UPDATE_FILTER',
+        payload: value,
+    }
+}
