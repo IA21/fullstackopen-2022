@@ -1,14 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { ac_vote } from '../reducers/anecdoteReducer'
+import { anecdoteVote } from '../reducers/anecdoteReducer'
 
 const AnecdoteList = () => {
     const dispatch = useDispatch()
     const anecdotes = useSelector(({ anecdotes, filter }) =>
-        anecdotes.filter(anc => anc.content.includes(filter))
+        anecdotes.filter(anc => anc.content.toLowerCase().includes(filter.toLowerCase()))
     )
 
     const vote = (id) => {
-        dispatch(ac_vote(id))
+        dispatch(anecdoteVote(id))
     }
 
     return (
