@@ -1,11 +1,11 @@
 import { useDispatch } from "react-redux"
-import { ac_filter } from "../reducers/anecdoteReducer"
+import { filterAnecdotes } from "../reducers/filterReducer"
 
 const AnecdoteFilter = () => {
     const dispatch = useDispatch()
 
     const filter_anecdotes = ({ target }) => {
-        dispatch(ac_filter(target.value))
+        dispatch(filterAnecdotes(target.value))
     }
 
     return (

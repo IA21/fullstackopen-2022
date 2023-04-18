@@ -22,8 +22,6 @@ const initialState = {
     filter: '',
 }
 
-console.log(initialState)
-
 export const anecdoteReducer = (state = initialState.anecdotes, action) => {
     switch (action.type) {
         case 'VOTE':
@@ -38,15 +36,6 @@ export const anecdoteReducer = (state = initialState.anecdotes, action) => {
                 content: action.data.content,
                 votes: 0,
             }]
-        default:
-            return state
-    }
-}
-
-export const filterReducer = (state = '', action) => {
-    switch (action.type) {
-        case 'UPDATE_FILTER':
-            return action.payload
         default:
             return state
     }
@@ -67,12 +56,5 @@ export const ac_add_anecdote = (content) => {
         data: {
             content,
         }
-    }
-}
-
-export const ac_filter = (value) => {
-    return {
-        type: 'UPDATE_FILTER',
-        payload: value,
     }
 }
