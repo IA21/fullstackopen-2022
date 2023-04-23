@@ -16,4 +16,12 @@ const add = async (content) => {
     return res.data
 }
 
-export default { get_all, add } // eslint-disable-line import/no-anonymous-default-export
+const vote = async (anc) => {
+    let res = await axios.put(`${base_url}/${anc.id}`, {
+        ...anc,
+        votes: anc.votes + 1,
+    })
+    return res.data
+}
+
+export default { get_all, add, vote } // eslint-disable-line import/no-anonymous-default-export
