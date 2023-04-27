@@ -1,10 +1,23 @@
+import { useMutation, useQueryClient } from 'react-query'
+import axios from 'axios'
+
 const AnecdoteForm = () => {
+    const queryClient = useQueryClient()
+
+    const newAnecdoteMutator = useMutation({
+        mutationFn: (newAnecdote) => {
+            return axios.post(`http://localhost:3001/anecdotes`, newAnecdote).then(res => res.data)
+        },
+        onSuccess: (newAnecdote) => {
+            queryClient.invalidateQueries('anecdotes')
+        }
+    })
 
     const onCreate = (event) => {
         event.preventDefault()
         const content = event.target.anecdote.value
         event.target.anecdote.value = ''
-        console.log('new anecdote')
+        newAnecdoteMutator.mutate({ content, votes: 0 })
     }
 
     return (
