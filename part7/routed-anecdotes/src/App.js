@@ -84,6 +84,12 @@ const CreateNew = ({ addNew, setNotification }) => {
         navigate('/')
     }
 
+    const resetForm = () => {
+        content.reset()
+        author.reset()
+        info.reset()
+    }
+
     return (
         <div>
             <h2>create a new anecdote</h2>
@@ -100,7 +106,8 @@ const CreateNew = ({ addNew, setNotification }) => {
                     url for more info
                     <input {...info} />
                 </div>
-                <button>create</button>
+                <button type='submit'>create</button>
+                <button type='button' onClick={resetForm}>reset</button>
             </form>
         </div>
     )
