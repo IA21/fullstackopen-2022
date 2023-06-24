@@ -85,9 +85,9 @@ const CreateNew = ({ addNew, setNotification }) => {
     }
 
     const resetForm = () => {
-        content.reset()
-        author.reset()
-        info.reset()
+        content.onReset()
+        author.onReset()
+        info.onReset()
     }
 
     return (
